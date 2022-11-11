@@ -7,12 +7,12 @@ require (
 	github.com/coreos/go-oidc/v3 v3.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.9.2
-	github.com/urfave/cli/v2 v2.20.2
-	go.pitz.tech/lib v0.0.0-20221020005345-8cee279ff8a2
+	github.com/urfave/cli/v2 v2.20.3
+	go.pitz.tech/lib v0.0.0-20221020175712-5c8c1fe68515
 	go.uber.org/zap v1.23.0
 	golang.org/x/oauth2 v0.1.0
 	golang.org/x/sync v0.1.0
-	gorm.io/driver/postgres v1.4.4
+	gorm.io/driver/postgres v1.4.5
 	gorm.io/driver/sqlite v1.4.3
 )
 
@@ -30,7 +30,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jonboulle/clockwork v0.3.0 // indirect
-	github.com/mattn/go-sqlite3 v1.14.15 // indirect
+	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
@@ -52,6 +52,6 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
-	gorm.io/gorm v1.24.0
-	storj.io/common v0.0.0-20221019194537-83504d6cb1c1
+	gorm.io/gorm v1.24.1-0.20221019064659-5dd2bb482755
+	storj.io/common v0.0.0-20221024150824-a2a5c611dacf
 )

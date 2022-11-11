@@ -13,13 +13,25 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package commands
+package storj
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"time"
 
 	"github.com/urfave/cli/v2"
+	"go.pitz.tech/em/internal/storj/auth"
+	oidcauth "go.pitz.tech/lib/auth/oidc"
+	"go.pitz.tech/lib/browser"
+	"go.pitz.tech/lib/logger"
+	"golang.org/x/oauth2"
+	"golang.org/x/sync/errgroup"
 
 	"go.pitz.tech/lib/flagset"
 
@@ -48,21 +60,86 @@ var (
 		},
 	}
 
-	Storj = &cli.Command{
-		Name:  "storj",
-		Usage: "Utility scripts for working with storj-specific semantics.",
+	authConfig = &oidcauth.Config{
+		Scopes: cli.NewStringSlice(),
+	}
+
+	Command = &cli.Command{
+		Name:            "storj",
+		Usage:           "Common operations for working with Storj resources.",
+		HideHelpCommand: true,
 		Subcommands: []*cli.Command{
 			{
-				Name:  "uuid",
-				Usage: "Format storj-specific UUID.",
-				Flags: flagset.ExtractPrefix("em", uuidGen),
+				Name:            "auth",
+				Usage:           "Authenticate with a Storj OIDC provider.",
+				Flags:           flagset.ExtractPrefix("em", authConfig),
+				HideHelpCommand: true,
+				Action: func(ctx *cli.Context) error {
+					uri, err := url.Parse(authConfig.RedirectURL)
+					if err != nil {
+						return err
+					}
+
+					svr := &http.Server{
+						Addr: uri.Host,
+						BaseContext: func(_ net.Listener) context.Context {
+							return ctx.Context
+						},
+					}
+
+					if len(authConfig.Scopes.Value()) == 0 {
+						authConfig.Scopes = cli.NewStringSlice("openid", "profile", "email", "object:list", "object:read", "object:write", "object:delete")
+					}
+
+					cctx, cancel := context.WithCancel(ctx.Context)
+					defer cancel()
+
+					svr.Handler = auth.ServeMux(*authConfig, func(token *oauth2.Token, rootKey []byte) {
+						defer cancel()
+
+						enc := json.NewEncoder(ctx.App.Writer)
+						enc.SetIndent("", "  ")
+						_ = enc.Encode(struct {
+							Token   *oauth2.Token `json:"token"`
+							RootKey []byte        `json:"root_key"`
+						}{
+							Token:   token,
+							RootKey: rootKey,
+						})
+					})
+
+					group := &errgroup.Group{}
+
+					group.Go(func() error {
+						time.Sleep(time.Second)
+						url := uri.Scheme + "://" + uri.Host + "/login"
+
+						logger.Extract(ctx.Context).Info("Opening " + url)
+						return browser.Open(ctx.Context, url)
+					})
+
+					group.Go(svr.ListenAndServe)
+
+					<-cctx.Done()
+					_ = svr.Shutdown(ctx.Context)
+					_ = group.Wait()
+
+					return nil
+				},
+			},
+			{
+				Name:            "uuid",
+				Usage:           "Format storj-specific UUID.",
+				Flags:           flagset.ExtractPrefix("em", uuidGen),
+				HideHelpCommand: true,
 				Subcommands: []*cli.Command{
 					{
-						Name:  "format",
-						Usage: "Swap between different formats of the UUID (string and bytes)",
-						Flags: flagset.ExtractPrefix("em", uuidFormat),
+						Name:            "format",
+						Usage:           "Swap between different formats of the UUID (string and bytes)",
+						Flags:           flagset.ExtractPrefix("em", uuidFormat),
+						HideHelpCommand: true,
 						Action: func(ctx *cli.Context) error {
-							in, err := ioutil.ReadAll(ctx.App.Reader)
+							in, err := io.ReadAll(ctx.App.Reader)
 							if err != nil {
 								return err
 							}
@@ -93,7 +170,6 @@ var (
 
 							return err
 						},
-						HideHelpCommand: true,
 					},
 				},
 				Action: func(ctx *cli.Context) error {
@@ -113,9 +189,7 @@ var (
 
 					return err
 				},
-				HideHelpCommand: true,
 			},
 		},
-		HideHelpCommand: true,
 	}
 )

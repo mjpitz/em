@@ -22,21 +22,29 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v2"
+	"go.pitz.tech/em/internal/admin"
+	"go.pitz.tech/em/internal/crypto"
+	"go.pitz.tech/em/internal/encoding"
+	"go.pitz.tech/em/internal/jenkins"
+	"go.pitz.tech/em/internal/oidc"
+	"go.pitz.tech/em/internal/project"
+	"go.pitz.tech/em/internal/storj"
+	"go.pitz.tech/em/internal/ulid"
+	"go.pitz.tech/em/internal/version"
 
 	"go.pitz.tech/lib/lifecycle"
 
-	"go.pitz.tech/em/internal/commands"
 	"go.pitz.tech/lib/flagset"
-	"go.pitz.tech/lib/zaputil"
+	"go.pitz.tech/lib/logger"
 )
 
 type GlobalConfig struct {
-	Log zaputil.Config `json:"log"`
+	Log logger.Config `json:"log"`
 }
 
 func main() {
 	config := &GlobalConfig{
-		Log: zaputil.DefaultConfig(),
+		Log: logger.DefaultConfig(),
 	}
 
 	app := &cli.App{
@@ -45,16 +53,19 @@ func main() {
 		UsageText: "em [options] <command>",
 		Flags:     flagset.Extract(config),
 		Commands: []*cli.Command{
-			commands.Analyze,
-			commands.Auth,
-			commands.Encode,
-			commands.Scaffold,
-			commands.Storj,
-			commands.ULID,
-			commands.Version,
+			// order package by abc
+			admin.Command,
+			crypto.Command,
+			encoding.Command,
+			jenkins.Command,
+			oidc.Command,
+			project.Command,
+			storj.Command,
+			ulid.Command,
+			version.Command,
 		},
 		Before: func(ctx *cli.Context) error {
-			ctx.Context = zaputil.Setup(ctx.Context, config.Log)
+			ctx.Context = logger.Setup(ctx.Context, config.Log)
 			ctx.Context = lifecycle.Setup(ctx.Context)
 
 			return nil
@@ -63,6 +74,7 @@ func main() {
 		HideHelpCommand:      true,
 		EnableBashCompletion: true,
 		BashComplete:         cli.DefaultAppComplete,
+		Suggest:              true,
 		Metadata: map[string]interface{}{
 			"arch":       runtime.GOARCH,
 			"go_version": strings.TrimPrefix(runtime.Version(), "go"),

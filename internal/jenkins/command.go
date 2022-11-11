@@ -13,51 +13,53 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package commands
+package jenkins
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli/v2"
 	"go.pitz.tech/em/internal/index"
-	"go.pitz.tech/em/internal/jenkins"
 	"go.pitz.tech/lib/flagset"
 )
 
 type AnalyzeConfig struct {
-	Index   index.Config   `json:"index"`
-	Jenkins jenkins.Config `json:"jenkins"`
+	Index   index.Config `json:"index"`
+	Jenkins Config       `json:"jenkins"`
 }
 
 var (
 	analyzeConfig = &AnalyzeConfig{
-		Jenkins: jenkins.Config{
+		Jenkins: Config{
 			Jobs: cli.NewStringSlice(),
 		},
 	}
 
-	Analyze = &cli.Command{
-		Name:      "analyze",
-		Usage:     "Generate data sets for a variety of integrations.",
-		UsageText: "em analyze <integration>",
-		Flags:     flagset.ExtractPrefix("em", analyzeConfig),
-		Action: func(ctx *cli.Context) error {
-			idx, err := index.Open(analyzeConfig.Index)
-			if err != nil {
-				return err
-			}
-			defer idx.Close()
-
-			integration := ctx.Args().Get(0)
-			switch integration {
-			case "":
-				return fmt.Errorf("missing integration")
-			case "jenkins":
-				return jenkins.Run(ctx.Context, analyzeConfig.Jenkins, idx)
-			default:
-				return fmt.Errorf("unknonw integration: %s", integration)
-			}
-		},
+	Command = &cli.Command{
+		Name:            "jenkins",
+		Usage:           "Common operations for working with Jenkins deployments.",
 		HideHelpCommand: true,
+		Subcommands: []*cli.Command{
+			{
+				Name:            "builds",
+				Usage:           "Common operations for working with Jenkins builds.",
+				HideHelpCommand: true,
+				Subcommands: []*cli.Command{
+					{
+						Name:            "analyze",
+						Usage:           "Analyze builds in a Jenkins instance",
+						Flags:           flagset.ExtractPrefix("em", analyzeConfig),
+						HideHelpCommand: true,
+						Action: func(ctx *cli.Context) error {
+							idx, err := index.Open(analyzeConfig.Index)
+							if err != nil {
+								return err
+							}
+							defer idx.Close()
+
+							return Run(ctx.Context, analyzeConfig.Jenkins, idx)
+						},
+					},
+				},
+			},
+		},
 	}
 )

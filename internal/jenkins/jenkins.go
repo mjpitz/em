@@ -22,7 +22,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 	"go.pitz.tech/em/internal/index"
-	"go.pitz.tech/lib/zaputil"
+	"go.pitz.tech/lib/logger"
 	"go.uber.org/zap"
 )
 
@@ -47,7 +47,7 @@ type Config struct {
 }
 
 func Run(ctx context.Context, cfg Config, idx *index.Index) error {
-	log := zaputil.Extract(ctx)
+	log := logger.Extract(ctx)
 
 	log.Info("migrating db")
 	err := idx.Migrate(doc{})

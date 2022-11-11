@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package commands
+package version
 
 import (
 	"text/template"
@@ -23,7 +23,7 @@ import (
 
 const versionTemplate = "{{ .Name }} {{ range $key, $value := .Metadata }}{{ $key }}={{ $value }} {{ end }}\n"
 
-var Version = &cli.Command{
+var Command = &cli.Command{
 	Name:      "version",
 	Usage:     "Print the binary version information.",
 	UsageText: "em version",

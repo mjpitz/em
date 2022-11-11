@@ -12,7 +12,7 @@ import (
 "github.com/mjpitz/{{ .Name }}/internal/commands"
 "go.pitz.tech/lib/flagset"
 "go.pitz.tech/lib/lifecycle"
-"go.pitz.tech/lib/zaputil"
+"go.pitz.tech/lib/logger"
 )
 
 var version = ""
@@ -20,14 +20,14 @@ var commit = ""
 var date = time.Now().Format(time.RFC3339)
 
 type GlobalConfig struct {
-Log zaputil.Config `json:"log"`
+Log logger.Config `json:"log"`
 }
 
 func main() {
 compiled, _ := time.Parse(time.RFC3339, date)
 
 cfg := &GlobalConfig{
-Log: zaputil.DefaultConfig(),
+Log: logger.DefaultConfig(),
 }
 
 app := &cli.App{
@@ -41,7 +41,7 @@ UsageText: "{{ .Name }} [options]
   commands.Version,
   },
   Before: func(ctx *cli.Context) error {
-  ctx.Context = zaputil.Setup(ctx.Context, cfg.Log)
+  ctx.Context = logger.Setup(ctx.Context, cfg.Log)
   ctx.Context = lifecycle.Setup(ctx.Context)
 
   return nil

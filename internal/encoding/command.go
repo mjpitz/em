@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package commands
+package encoding
 
 import (
 	"bufio"
@@ -25,8 +25,8 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v2"
+	"go.pitz.tech/em/internal/encoding/phone"
 
-	"go.pitz.tech/em/internal/phone"
 	"go.pitz.tech/lib/flagset"
 )
 
@@ -38,7 +38,7 @@ type EncodeConfig struct {
 var (
 	encodeConfig = &EncodeConfig{}
 
-	Encode = &cli.Command{
+	Command = &cli.Command{
 		Name:      "encode",
 		Usage:     "Read and write different encodings.",
 		UsageText: "em encode [message]",

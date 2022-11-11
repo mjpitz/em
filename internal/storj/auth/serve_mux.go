@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package storjauth
+package auth
 
 import (
 	"context"
@@ -29,8 +29,8 @@ import (
 
 	oidcauth "go.pitz.tech/lib/auth/oidc"
 	"go.pitz.tech/lib/lazy"
+	"go.pitz.tech/lib/logger"
 	"go.pitz.tech/lib/ulid"
-	"go.pitz.tech/lib/zaputil"
 
 	"storj.io/common/base58"
 )
@@ -114,7 +114,7 @@ func ServeMux(cfg oidcauth.Config, callback TokenCallback) *http.ServeMux {
 
 	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		logger := zaputil.Extract(ctx)
+		logger := logger.Extract(ctx)
 
 		config, configErr := configOnce.Get(ctx)
 		provider, providerErr := providerOnce.Get(ctx)

@@ -25,11 +25,11 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"go.pitz.tech/em/internal/project/scaffold/gitignore"
+	"go.pitz.tech/em/internal/project/scaffold/licenses"
 	"go.uber.org/zap"
 
-	"go.pitz.tech/em/internal/scaffold/gitignore"
-	"go.pitz.tech/em/internal/scaffold/licenses"
-	"go.pitz.tech/lib/zaputil"
+	"go.pitz.tech/lib/logger"
 )
 
 var (
@@ -203,7 +203,7 @@ type Renderer struct {
 }
 
 func (s *Renderer) Render(ctx context.Context) []File {
-	logger := zaputil.Extract(ctx)
+	logger := logger.Extract(ctx)
 
 	filesToRender := make([]string, 0)
 	for _, feature := range s.data.Features {
