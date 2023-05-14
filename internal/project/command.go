@@ -66,12 +66,12 @@ var (
 				Usage:           "Scaffold out a new project or add onto an existing one.",
 				HideHelpCommand: true,
 				Flags:           flagset.ExtractPrefix("em", scaffoldConfig),
-				UsageText: flagset.ExampleString(
+				UsageText: strings.Join([]string{
 					"em project scaffold [options] <name>",
 					"em project scaffold features    # will output a list of features and aliases",
 					"em project scaffold --mkdir --license mpl --features init <name>",
 					"em project scaffold --mkdir --license mpl --features init --features bin <name>",
-				),
+				}, "\n"),
 				Action: func(ctx *cli.Context) error {
 					if ctx.NArg() == 0 {
 						return fmt.Errorf("name not specified")

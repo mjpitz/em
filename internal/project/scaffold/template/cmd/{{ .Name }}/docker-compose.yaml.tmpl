@@ -1,11 +1,10 @@
 version: "3.8"
 
 services:
-{{ .Name }}:
-container_name: {{ .Name }}
-image: ${SKAFFOLD_DEFAULT_REPO:-ghcr.io/mjpitz}/{{ .Name }}
-restart: always
-environment:
-LOG_LEVEL: info
-LOG_FORMAT: json
-command: []
+  {{ .Name }}:
+    image: ${SKAFFOLD_DEFAULT_REPO:-img.pitz.tech/mya}/{{ .Name }}
+    restart: always
+    environment:
+      LOG_LEVEL: info
+      LOG_FORMAT: json
+    command: []

@@ -5,10 +5,12 @@ set -e -o pipefail
 go mod download
 go mod verify
 
+go generate ./...
+
 if [[ -z "${VERSION}" ]]; then
-goreleaser --snapshot --skip-publish --rm-dist
+  goreleaser --snapshot --skip-publish --rm-dist
 else
-goreleaser
+  goreleaser
 fi
 
 rm -rf "$(pwd)/{{ .Name }}"
@@ -16,7 +18,7 @@ rm -rf "$(pwd)/{{ .Name }}"
 os=$(uname | tr '[:upper:]' '[:lower:]')
 arch="$(uname -m)"
 if [[ "$arch" == "x86_64" ]]; then
-ln -s "$(pwd)/dist/{{ .Name }}_${os}_amd64/{{ .Name }}" "$(pwd)/{{ .Name }}"
+  ln -s "$(pwd)/dist/{{ .Name }}_${os}_amd64_v1/{{ .Name }}" "$(pwd)/{{ .Name }}"
 elif [[ "$arch" == "aarch64" ]]; then
-ln -s "$(pwd)/dist/{{ .Name }}_${os}_arm64/{{ .Name }}" "$(pwd)/{{ .Name }}"
+  ln -s "$(pwd)/dist/{{ .Name }}_${os}_arm64/{{ .Name }}" "$(pwd)/{{ .Name }}"
 fi

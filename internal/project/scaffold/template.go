@@ -54,7 +54,8 @@ var (
 			"cmd/{{ .Name }}/Dockerfile.tmpl",
 		},
 		"GoBinary": {
-			"internal/commands/version.go.tmpl",
+			"internal/admin/command.go.tmpl",
+			"internal/version/command.go.tmpl",
 			"cmd/{{ .Name }}/main.go.tmpl",
 		},
 		"GoReleaser": {

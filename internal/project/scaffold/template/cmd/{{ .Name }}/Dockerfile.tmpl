@@ -1,11 +1,13 @@
 FROM alpine:3.12
 
 WORKDIR /opt/{{ .Name }}
-RUN apk add -U tzdata ca-certificates
+RUN apk add -U tzdata ca-certificates gzip
 
 ARG TARGETOS
 ARG TARGETARCH
-COPY dist/{{ .Name }}_${TARGETOS}_${TARGETARCH}/{{ .Name }} /opt/{{ .Name }}/bin/{{ .Name }}
-COPY LICENSE /opt/{{ .Name }}/LICENSE
+COPY dist/{{ .Name }}_${TARGETOS}_${TARGETARCH}.tar.gz /opt/{{ .Name }}/bin/{{ .Name }}.tar.gz
+RUN tar x -C bin -z -f bin/{{ .Name }}.tar.gz && \
+  rm bin/{{ .Name }}.tar.gz && \
+  mv bin/LICENSE LICENSE
 
 ENTRYPOINT [ "/opt/{{ .Name }}/bin/{{ .Name }}" ]

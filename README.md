@@ -22,9 +22,10 @@ em [options] <command>
 
 **--help, -h**: show help
 
-**--log_format**="": configure the format of the logs (default: json)
+**--log_format**="": configure the format of the logs (default: "json")
 
-**--log_level**="": adjust the verbosity of the logs (default: info)
+**--log_level**="": adjust the verbosity of the logs (default: "info")
+
 
 # COMMANDS
 
@@ -50,11 +51,23 @@ Prints markdown documentation for em.
 
 Prints the man page for em.
 
+## crypto
+
+Common operations for working with cryptographic artifacts.
+
+### aes
+
+Operations for interacting with AES keys.
+
+### rsa
+
+Operations for interacting with RSA keys.
+
 ## encode, enc
 
 Read and write different encodings.
 
-> em encode [message]
+>em encode [message]
 
 **--in, -i**="": the input encoding (default: ascii)
 
@@ -77,10 +90,6 @@ Analyze builds in a Jenkins instance
 **--jenkins_base_url**="": specify the base url of the jenkins instance we're indexing
 
 **--jenkins_job**="": provide an initial list of jobs to analyze
-
-## kubernetes, kube
-
-Common operations for working with Kubernetes resources.
 
 ## oidc
 
@@ -111,9 +120,9 @@ Common operations for working with projects.
 Scaffold out a new project or add onto an existing one.
 
     em project scaffold [options] <name>
-       em project scaffold features    # will output a list of features and aliases
-       em project scaffold --mkdir --license mpl --features init <name>
-       em project scaffold --mkdir --license mpl --features init --features bin <name>
+    em project scaffold features    # will output a list of features and aliases
+    em project scaffold --mkdir --license mpl --features init <name>
+    em project scaffold --mkdir --license mpl --features init --features bin <name>
 
 **--features**="": specify the features to generate
 
@@ -161,7 +170,7 @@ Generate or format myago/ulids.
 
 **--out, -o**="": specify the output format (string, bytes) (default: string)
 
-**--size**="": specify the size of the ulid being generated (default: 256)
+**--size**="": specify the size of the ulid being generated (default: 0)
 
 ### format
 
@@ -175,4 +184,4 @@ Parse and format provided myago/ulids.
 
 Print the binary version information.
 
-> em version
+>em version
