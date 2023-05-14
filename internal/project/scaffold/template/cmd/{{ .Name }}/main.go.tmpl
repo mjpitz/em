@@ -10,15 +10,64 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"code.pitz.tech/mya/{{ .Name }}/internal/admin"
-	v "code.pitz.tech/mya/{{ .Name }}/internal/version"
+	"code.pitz.tech/mya/{{ .Name }}/internal/version"
 	"go.pitz.tech/lib/flagset"
 	"go.pitz.tech/lib/lifecycle"
 	"go.pitz.tech/lib/logger"
 )
 
-var version = ""
-var commit = ""
-var date = time.Now().Format(time.RFC3339)
+type BuildInfo struct {
+	OS           string
+	Architecture string
+
+	GoVersion  string
+	CGoEnabled bool
+
+	VCS      string
+	Revision string
+	Compiled time.Time
+	Modified bool
+}
+
+func (info BuildInfo) Metadata() map[string]any {
+	return map[string]any{
+		"os":   info.OS,
+		"arch": info.Architecture,
+		"go":   info.GoVersion,
+		"cgo":  strconv.FormatBool(info.CGoEnabled),
+		"vcs":  info.VCS,
+		"rev":  info.Revision,
+		"time": info.Compiled.Format(time.RFC3339),
+		"mod":  strconv.FormatBool(info.Modified),
+	}
+}
+
+func parseBuildInfo() (info BuildInfo) {
+	info.OS = runtime.GOOS
+	info.Architecture = runtime.GOARCH
+	info.GoVersion = strings.TrimPrefix(runtime.Version(), "go")
+	info.Compiled = time.Now()
+
+	build, ok := debug.ReadBuildInfo()
+	if ok {
+		for _, setting := range build.Settings {
+			switch setting.Key {
+			case "CGO_ENABLED":
+				info.CGoEnabled, _ = strconv.ParseBool(setting.Value)
+			case "vcs":
+				info.VCS = setting.Value
+			case "vcs.revision":
+				info.Revision = setting.Value
+			case "vcs.time":
+				info.Compiled, _ = time.Parse(time.RFC3339, setting.Value)
+			case "vcs.modified":
+				info.Modified, _ = strconv.ParseBool(setting.Value)
+			}
+		}
+	}
+
+	return info
+}
 
 type GlobalConfig struct {
 	Log logger.Config `json:"log"`
@@ -39,7 +88,7 @@ func main() {
 		Flags: flagset.Extract(cfg),
 		Commands: []*cli.Command{
 			admin.Command,
-			v.Command,
+			version.Command,
 		},
 		Before: func(ctx *cli.Context) error {
 			ctx.Context = logger.Setup(ctx.Context, cfg.Log)
