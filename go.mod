@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/coreos/go-oidc/v3 v3.5.0
+	github.com/coreos/go-oidc/v3 v3.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.9.5
 	github.com/stretchr/testify v1.8.4
