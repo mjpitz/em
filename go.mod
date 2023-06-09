@@ -14,7 +14,7 @@ require (
 	golang.org/x/oauth2 v0.8.0
 	golang.org/x/sync v0.2.0
 	gorm.io/driver/postgres v1.5.0
-	gorm.io/driver/sqlite v1.5.0
+	gorm.io/driver/sqlite v1.5.2
 )
 
 require (
@@ -28,7 +28,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect
-	github.com/mattn/go-sqlite3 v1.14.16 // indirect
+	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
@@ -51,6 +51,6 @@ require (
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
-	gorm.io/gorm v1.25.1
+	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
 	storj.io/common v0.0.0-20230509194752-f0e992003ae2
 )
