@@ -52,5 +52,5 @@ require (
 	github.com/imdario/mergo v0.3.15 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	gorm.io/gorm v1.25.1
-	storj.io/common v0.0.0-20230509194752-f0e992003ae2
+	storj.io/common v0.0.0-20230602145716-d6ea82d58b3d
 )
