@@ -12,7 +12,7 @@ require (
 	go.pitz.tech/lib v0.0.0-20230528173929-d4333650feda
 	go.uber.org/zap v1.24.0
 	golang.org/x/oauth2 v0.8.0
-	golang.org/x/sync v0.2.0
+	golang.org/x/sync v0.3.0
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/driver/sqlite v1.5.0
 )
