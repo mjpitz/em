@@ -4,12 +4,12 @@ go 1.19
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/coreos/go-oidc/v3 v3.5.0
+	github.com/coreos/go-oidc/v3 v3.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.9.5
 	github.com/stretchr/testify v1.8.4
-	github.com/urfave/cli/v2 v2.25.3
-	go.pitz.tech/lib v0.0.0-20230528173929-d4333650feda
+	github.com/urfave/cli/v2 v2.25.4
+	go.pitz.tech/lib v0.0.0-20230619022412-3fc584dc445d
 	go.uber.org/zap v1.24.0
 	golang.org/x/oauth2 v0.8.0
 	golang.org/x/sync v0.2.0
