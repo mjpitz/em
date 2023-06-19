@@ -8,7 +8,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.9.5
 	github.com/stretchr/testify v1.8.4
-	github.com/urfave/cli/v2 v2.25.3
+	github.com/urfave/cli/v2 v2.25.7
 	go.pitz.tech/lib v0.0.0-20230528173929-d4333650feda
 	go.uber.org/zap v1.24.0
 	golang.org/x/oauth2 v0.8.0
