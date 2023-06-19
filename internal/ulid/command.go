@@ -18,7 +18,7 @@ package ulid
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 
 	"github.com/urfave/cli/v2"
 	"go.pitz.tech/lib/flagset"
@@ -55,7 +55,7 @@ var (
 				Usage: "Parse and format provided myago/ulids.",
 				Flags: flagset.ExtractPrefix("", formatConfig),
 				Action: func(ctx *cli.Context) error {
-					in, err := ioutil.ReadAll(ctx.App.Reader)
+					in, err := io.ReadAll(ctx.App.Reader)
 					if err != nil {
 						return err
 					}

@@ -23,12 +23,14 @@ import (
 
 	"github.com/urfave/cli/v2"
 	"go.pitz.tech/em/internal/admin"
+	"go.pitz.tech/em/internal/ballistics"
 	"go.pitz.tech/em/internal/crypto"
 	"go.pitz.tech/em/internal/encoding"
 	"go.pitz.tech/em/internal/jenkins"
 	"go.pitz.tech/em/internal/oidc"
 	"go.pitz.tech/em/internal/project"
 	"go.pitz.tech/em/internal/storj"
+	"go.pitz.tech/em/internal/time"
 	"go.pitz.tech/em/internal/ulid"
 	"go.pitz.tech/em/internal/version"
 
@@ -55,12 +57,14 @@ func main() {
 		Commands: []*cli.Command{
 			// order package by abc
 			admin.Command,
+			ballistics.Command,
 			crypto.Command,
 			encoding.Command,
 			jenkins.Command,
 			oidc.Command,
 			project.Command,
 			storj.Command,
+			time.Command,
 			ulid.Command,
 			version.Command,
 		},
@@ -71,7 +75,6 @@ func main() {
 			return nil
 		},
 		HideVersion:          true,
-		HideHelpCommand:      true,
 		EnableBashCompletion: true,
 		BashComplete:         cli.DefaultAppComplete,
 		Suggest:              true,
