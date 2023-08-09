@@ -49,6 +49,6 @@ require (
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
-	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
+	gorm.io/gorm 206613868439
 	storj.io/common v0.0.0-20230602145716-d6ea82d58b3d
 )
