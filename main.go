@@ -17,6 +17,7 @@ package main
 
 import (
 	"fmt"
+	"go.pitz.tech/em/internal/pass"
 	"os"
 	"runtime"
 	"strings"
@@ -26,10 +27,8 @@ import (
 	"go.pitz.tech/em/internal/ballistics"
 	"go.pitz.tech/em/internal/crypto"
 	"go.pitz.tech/em/internal/encoding"
-	"go.pitz.tech/em/internal/jenkins"
 	"go.pitz.tech/em/internal/oidc"
 	"go.pitz.tech/em/internal/project"
-	"go.pitz.tech/em/internal/storj"
 	"go.pitz.tech/em/internal/time"
 	"go.pitz.tech/em/internal/ulid"
 	"go.pitz.tech/em/internal/version"
@@ -60,10 +59,9 @@ func main() {
 			ballistics.Command,
 			crypto.Command,
 			encoding.Command,
-			jenkins.Command,
 			oidc.Command,
+			pass.Command,
 			project.Command,
-			storj.Command,
 			time.Command,
 			ulid.Command,
 			version.Command,
