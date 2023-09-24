@@ -53,19 +53,24 @@ type ScaffoldConfig struct {
 	Features *cli.StringSlice `json:"features" usage:"specify the features to generate"`
 }
 
+type IgnoreConfig struct {
+	Global     bool   `json:"global" usage:""`
+	IgnoreFile string `json:"ignore_file" usage:"" default:".gitignore"`
+}
+
 var (
 	scaffoldConfig = &ScaffoldConfig{}
+	ignoreConfig   = &IgnoreConfig{}
 
 	Command = &cli.Command{
-		Name:            "project",
-		Usage:           "Common operations for working with projects.",
-		HideHelpCommand: true,
+		Name:  "project",
+		Usage: "Common operations for working with projects.",
 		Subcommands: []*cli.Command{
 			{
 				Name:            "scaffold",
 				Usage:           "Scaffold out a new project or add onto an existing one.",
-				HideHelpCommand: true,
 				Flags:           flagset.ExtractPrefix("em", scaffoldConfig),
+				HideHelpCommand: true,
 				UsageText: strings.Join([]string{
 					"em project scaffold [options] <name>",
 					"em project scaffold features    # will output a list of features and aliases",
@@ -141,6 +146,66 @@ var (
 					}
 
 					return nil
+				},
+			},
+			{
+				Name:            "ignore",
+				Usage:           "Ignore files within a given project.",
+				UsageText:       "em project ignore [options] <...patterns>",
+				Flags:           flagset.ExtractPrefix("em", ignoreConfig),
+				HideHelpCommand: true,
+				Action: func(ctx *cli.Context) error {
+					log := logger.Extract(ctx.Context)
+					cfg := ignoreConfig
+
+					var gitIgnore string
+					if cfg.Global {
+						homedir, err := os.UserHomeDir()
+						if err != nil {
+							return err
+						}
+
+						gitIgnore = filepath.Join(homedir, cfg.IgnoreFile)
+					} else {
+						workdir, err := os.Getwd()
+						if err != nil {
+							return err
+						}
+
+						var lastdir string
+						for {
+							if lastdir == workdir {
+								return fmt.Errorf("failed to locate gitignore")
+							}
+
+							maybeIgnore := filepath.Join(workdir, cfg.IgnoreFile)
+							if _, err := os.Stat(maybeIgnore); err == nil {
+								gitIgnore = maybeIgnore
+								break
+							}
+
+							lastdir = workdir
+							workdir = filepath.Dir(filepath.Clean(workdir))
+						}
+					}
+
+					log.Info("updating gitignore", zap.String("path", gitIgnore))
+					f, err := os.OpenFile(gitIgnore, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+					if err != nil {
+						return err
+					}
+					defer f.Close()
+
+					for _, pattern := range ctx.Args().Slice() {
+						_, err = f.Write([]byte("\n" + pattern))
+						if err != nil {
+							return err
+						}
+					}
+
+					_, err = f.Write([]byte("\n"))
+
+					return err
 				},
 			},
 		},

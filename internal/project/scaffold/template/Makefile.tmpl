@@ -58,7 +58,7 @@ docker/release:
 
 test:
 {{- if $goEnabled }}
-go test -v -race -coverprofile=.coverprofile -covermode=atomic ./...
+	go test -v -race -coverprofile=.coverprofile -covermode=atomic ./...
 {{- end }}
 
 {{- if $legalEnabled }}

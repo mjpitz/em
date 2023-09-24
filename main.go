@@ -17,10 +17,13 @@ package main
 
 import (
 	"fmt"
-	"go.pitz.tech/em/internal/pass"
 	"os"
+	"os/signal"
 	"runtime"
+	"runtime/debug"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/urfave/cli/v2"
 	"go.pitz.tech/em/internal/admin"
@@ -28,22 +31,79 @@ import (
 	"go.pitz.tech/em/internal/crypto"
 	"go.pitz.tech/em/internal/encoding"
 	"go.pitz.tech/em/internal/oidc"
+	"go.pitz.tech/em/internal/pass"
 	"go.pitz.tech/em/internal/project"
-	"go.pitz.tech/em/internal/time"
+	itime "go.pitz.tech/em/internal/time"
 	"go.pitz.tech/em/internal/ulid"
 	"go.pitz.tech/em/internal/version"
-
-	"go.pitz.tech/lib/lifecycle"
 
 	"go.pitz.tech/lib/flagset"
 	"go.pitz.tech/lib/logger"
 )
+
+type BuildInfo struct {
+	OS           string
+	Architecture string
+
+	GoVersion  string
+	CGoEnabled bool
+
+	Version  string
+	VCS      string
+	Revision string
+	Compiled time.Time
+	Modified bool
+}
+
+func (info BuildInfo) Metadata() map[string]any {
+	return map[string]any{
+		"os":   info.OS,
+		"arch": info.Architecture,
+		"go":   info.GoVersion,
+		"cgo":  strconv.FormatBool(info.CGoEnabled),
+		"vcs":  info.VCS,
+		"rev":  info.Revision,
+		"time": info.Compiled.Format(time.RFC3339),
+		"mod":  strconv.FormatBool(info.Modified),
+	}
+}
+
+func parseBuildInfo() (info BuildInfo) {
+	info.OS = runtime.GOOS
+	info.Architecture = runtime.GOARCH
+	info.GoVersion = strings.TrimPrefix(runtime.Version(), "go")
+	info.Compiled = time.Now()
+
+	build, ok := debug.ReadBuildInfo()
+	if ok {
+		info.Version = build.Main.Version
+
+		for _, setting := range build.Settings {
+			switch setting.Key {
+			case "CGO_ENABLED":
+				info.CGoEnabled, _ = strconv.ParseBool(setting.Value)
+			case "vcs":
+				info.VCS = setting.Value
+			case "vcs.revision":
+				info.Revision = setting.Value
+			case "vcs.time":
+				info.Compiled, _ = time.Parse(time.RFC3339, setting.Value)
+			case "vcs.modified":
+				info.Modified, _ = strconv.ParseBool(setting.Value)
+			}
+		}
+	}
+
+	return info
+}
 
 type GlobalConfig struct {
 	Log logger.Config `json:"log"`
 }
 
 func main() {
+	info := parseBuildInfo()
+
 	config := &GlobalConfig{
 		Log: logger.DefaultConfig(),
 	}
@@ -52,6 +112,7 @@ func main() {
 		Name:      "em",
 		Usage:     "mya's general purpose command line utilities",
 		UsageText: "em [options] <command>",
+		Version:   info.Version,
 		Flags:     flagset.Extract(config),
 		Commands: []*cli.Command{
 			// order package by abc
@@ -62,25 +123,22 @@ func main() {
 			oidc.Command,
 			pass.Command,
 			project.Command,
-			time.Command,
+			itime.Command,
 			ulid.Command,
 			version.Command,
 		},
 		Before: func(ctx *cli.Context) error {
 			ctx.Context = logger.Setup(ctx.Context, config.Log)
-			ctx.Context = lifecycle.Setup(ctx.Context)
+			ctx.Context, _ = signal.NotifyContext(ctx.Context, os.Interrupt, os.Kill)
 
 			return nil
 		},
+		Compiled:             info.Compiled,
 		HideVersion:          true,
 		EnableBashCompletion: true,
 		BashComplete:         cli.DefaultAppComplete,
 		Suggest:              true,
-		Metadata: map[string]interface{}{
-			"arch":       runtime.GOARCH,
-			"go_version": strings.TrimPrefix(runtime.Version(), "go"),
-			"os":         runtime.GOOS,
-		},
+		Metadata:             info.Metadata(),
 	}
 
 	if err := app.Run(os.Args); err != nil {

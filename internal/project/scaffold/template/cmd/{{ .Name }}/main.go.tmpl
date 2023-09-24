@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"runtime/debug"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,6 +25,7 @@ type BuildInfo struct {
 	GoVersion  string
 	CGoEnabled bool
 
+	Version  string
 	VCS      string
 	Revision string
 	Compiled time.Time
@@ -50,6 +53,8 @@ func parseBuildInfo() (info BuildInfo) {
 
 	build, ok := debug.ReadBuildInfo()
 	if ok {
+		info.Version = build.Main.Version
+
 		for _, setting := range build.Settings {
 			switch setting.Key {
 			case "CGO_ENABLED":
@@ -74,46 +79,35 @@ type GlobalConfig struct {
 }
 
 func main() {
-	compiled, _ := time.Parse(time.RFC3339, date)
+	info := parseBuildInfo()
 
 	cfg := &GlobalConfig{
 		Log: logger.DefaultConfig(),
 	}
 
 	app := &cli.App{
-		Name:			"{{ .Name }}",
-		Usage:		 "",
-		UsageText: "{{ .Name }} [options] <command>",
-		Version: fmt.Sprintf("%s (%s)", version, commit),
-		Flags: flagset.Extract(cfg),
+		Name:		"{{ .Name }}",
+		Usage:		"",
+		UsageText:	"{{ .Name }} [options] <command>",
+		Version:	info.Version,
+		Flags:		flagset.Extract(cfg),
 		Commands: []*cli.Command{
 			admin.Command,
 			version.Command,
 		},
 		Before: func(ctx *cli.Context) error {
 			ctx.Context = logger.Setup(ctx.Context, cfg.Log)
-			ctx.Context = lifecycle.Setup(ctx.Context)
+			ctx.Context, _ = signal.NotifyContext(ctx.Context, os.Interrupt, os.Kill)
 
 			return nil
 		},
-		After: func(ctx *cli.Context) error {
-			lifecycle.Resolve(ctx.Context)
-			lifecycle.Shutdown(ctx.Context)
-
-			return nil
-		},
-		Compiled: compiled,
-		Copyright: fmt.Sprintf("Copyright %d The {{ .Name }} Authors - All Rights Reserved\n", compiled.Year()),
-		HideVersion: true,
-		HideHelpCommand: true,
+		Compiled:             info.Compiled,
+		Copyright:            fmt.Sprintf("Copyright %d The {{ .Name }} Authors - All Rights Reserved\n", info.Compiled.Year()),
+		HideVersion:          true,
+		HideHelpCommand:      true,
 		EnableBashCompletion: true,
-		BashComplete: cli.DefaultAppComplete,
-		Metadata: map[string]interface{}{
-			"arch": runtime.GOARCH,
-			"compiled": date,
-			"go_version": strings.TrimPrefix(runtime.Version(), "go"),
-			"os": runtime.GOOS,
-		},
+		BashComplete:         cli.DefaultAppComplete,
+		Metadata:             info.Metadata(),
 	}
 
 	if err := app.Run(os.Args); err != nil {

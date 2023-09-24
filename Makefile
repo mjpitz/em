@@ -1,7 +1,15 @@
-help:
+define HELP_TEXT
+Welcome to aetherfs!
 
-lint:
-	golangci-lint run --max-issues-per-linter 0 --max-same-issues 0
+Targets:
+help		provides help text
+legal		prepends legal header to source code
+
+endef
+export HELP_TEXT
+
+help:
+	@echo "$$HELP_TEXT"
 
 legal: .legal
 .legal:
