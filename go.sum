@@ -203,6 +203,8 @@ go.pitz.tech/lib v0.0.0-20230619022412-3fc584dc445d h1:9oW8flOkIfjyTBmEgfoQdMea6
 go.pitz.tech/lib v0.0.0-20230619022412-3fc584dc445d/go.mod h1:FuEf/wWkV7EqZ/nwtv1Cg4vQNocuCmFYrIQBCSQUE9s=
 go.pitz.tech/units v0.0.0-20230619043741-b208df8bdde6 h1:QWP25CiwZY2CFmkX57xPeoHrpsO6ONdjcU8s3gvwoMQ=
 go.pitz.tech/units v0.0.0-20230619043741-b208df8bdde6/go.mod h1:/GIcQN2Zl3WqhlnsvD7QrgmLwYfDOShAWHcBJlHTsbk=
+go.pitz.tech/units v0.0.0-20230716150049-6c28c390405c h1:n9DDX6EjPFF0v5K9MAElT1uJzyQg5EX+bz0Chgf9BtM=
+go.pitz.tech/units v0.0.0-20230716150049-6c28c390405c/go.mod h1:/GIcQN2Zl3WqhlnsvD7QrgmLwYfDOShAWHcBJlHTsbk=
 go.uber.org/atomic v1.11.0 h1:ZvwS0R+56ePWxUNi+Atn9dWONBPp/AUETXlHW0DxSjE=
 go.uber.org/atomic v1.11.0/go.mod h1:LUxbIzbOniOlMKjJjyPfpl4v+PKK2cNJn91OQbhoJI0=
 go.uber.org/goleak v1.1.11 h1:wy28qYRKZgnJTxGxvye5/wgWr1EKjmUDGYox5mGlRlI=
