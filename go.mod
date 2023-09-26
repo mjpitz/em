@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/afero v1.9.5
+	github.com/spf13/afero v1.10.0
 	github.com/urfave/cli/v2 v2.25.7
 	go.pitz.tech/lib v0.0.0-20230619022412-3fc584dc445d
 	go.pitz.tech/units v0.0.0-20230619043741-b208df8bdde6
