@@ -9,7 +9,7 @@ require (
 	github.com/urfave/cli/v2 v2.25.7
 	go.pitz.tech/lib v0.0.0-20230619022412-3fc584dc445d
 	go.pitz.tech/units v0.0.0-20230619043741-b208df8bdde6
-	go.uber.org/zap v1.24.0
+	go.uber.org/zap v1.26.0
 	golang.org/x/oauth2 v0.9.0
 	golang.org/x/sync v0.3.0
 	gorm.io/driver/postgres v1.5.2
