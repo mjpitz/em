@@ -11,7 +11,7 @@ require (
 	go.pitz.tech/units v0.0.0-20230619043741-b208df8bdde6
 	go.uber.org/zap v1.24.0
 	golang.org/x/oauth2 v0.9.0
-	golang.org/x/sync v0.3.0
+	golang.org/x/sync v0.4.0
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/driver/sqlite v1.5.2
 )
