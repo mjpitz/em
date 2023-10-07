@@ -7,7 +7,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.9.5
 	github.com/urfave/cli/v2 v2.25.7
-	go.pitz.tech/lib v0.0.0-20230619022412-3fc584dc445d
+	go.pitz.tech/lib v0.0.0-20231007142704-8e3c060b04d7
 	go.pitz.tech/units v0.0.0-20230619043741-b208df8bdde6
 	go.uber.org/zap v1.24.0
 	golang.org/x/oauth2 v0.9.0
