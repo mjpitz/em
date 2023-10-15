@@ -9,8 +9,8 @@ import (
 const versionTemplate = "{{ print "{{ .Name }} {{ .Version }} {{ range $key, $value := .Metadata }}{{ $key }}={{ $value }} {{ end }}" }}\n"
 
 var Command = &cli.Command{
-	Name:			"version",
-	Usage:		"Print the binary version information",
+	Name:      "version",
+	Usage:     "Print the binary version information",
 	UsageText: "{{ .Name }} version",
 	Action: func(ctx *cli.Context) error {
 		return template.

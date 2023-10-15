@@ -26,8 +26,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"github.com/urfave/cli/v2"
-	"go.pitz.tech/em/internal/project/scaffold"
 	"go.uber.org/zap"
+
+	"go.pitz.tech/em/internal/project/scaffold"
+	"go.pitz.tech/em/internal/project/scaffold/licenses"
 
 	"go.pitz.tech/lib/flagset"
 	"go.pitz.tech/lib/logger"
@@ -98,6 +100,14 @@ var (
 						})
 					}
 
+					license, ok := licenses.ByTemplateName[scaffoldConfig.License]
+					if !ok {
+						license, ok = licenses.BySPDX[scaffoldConfig.License]
+						if !ok {
+							return fmt.Errorf("unsupported license: %s", scaffoldConfig.License)
+						}
+					}
+
 					if scaffoldConfig.Mkdir {
 						logger.Extract(ctx.Context).Info("making directory")
 						if err := os.MkdirAll(name, 0755); err != nil {
@@ -113,7 +123,8 @@ var (
 					files := scaffold.Template(
 						scaffold.Data{
 							Name:     name,
-							License:  scaffoldConfig.License,
+							License:  license.TemplateName,
+							SPDX:     license.Identifier,
 							Features: scaffoldConfig.Features.Value(),
 						},
 					).Render(ctx.Context)

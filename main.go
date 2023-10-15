@@ -19,13 +19,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"runtime"
-	"runtime/debug"
-	"strconv"
-	"strings"
-	"time"
 
 	"github.com/urfave/cli/v2"
+
 	"go.pitz.tech/em/internal/admin"
 	"go.pitz.tech/em/internal/ballistics"
 	"go.pitz.tech/em/internal/crypto"
@@ -36,73 +32,17 @@ import (
 	itime "go.pitz.tech/em/internal/time"
 	"go.pitz.tech/em/internal/ulid"
 	"go.pitz.tech/em/internal/version"
-
+	"go.pitz.tech/lib/build"
 	"go.pitz.tech/lib/flagset"
 	"go.pitz.tech/lib/logger"
 )
-
-type BuildInfo struct {
-	OS           string
-	Architecture string
-
-	GoVersion  string
-	CGoEnabled bool
-
-	Version  string
-	VCS      string
-	Revision string
-	Compiled time.Time
-	Modified bool
-}
-
-func (info BuildInfo) Metadata() map[string]any {
-	return map[string]any{
-		"os":   info.OS,
-		"arch": info.Architecture,
-		"go":   info.GoVersion,
-		"cgo":  strconv.FormatBool(info.CGoEnabled),
-		"vcs":  info.VCS,
-		"rev":  info.Revision,
-		"time": info.Compiled.Format(time.RFC3339),
-		"mod":  strconv.FormatBool(info.Modified),
-	}
-}
-
-func parseBuildInfo() (info BuildInfo) {
-	info.OS = runtime.GOOS
-	info.Architecture = runtime.GOARCH
-	info.GoVersion = strings.TrimPrefix(runtime.Version(), "go")
-	info.Compiled = time.Now()
-
-	build, ok := debug.ReadBuildInfo()
-	if ok {
-		info.Version = build.Main.Version
-
-		for _, setting := range build.Settings {
-			switch setting.Key {
-			case "CGO_ENABLED":
-				info.CGoEnabled, _ = strconv.ParseBool(setting.Value)
-			case "vcs":
-				info.VCS = setting.Value
-			case "vcs.revision":
-				info.Revision = setting.Value
-			case "vcs.time":
-				info.Compiled, _ = time.Parse(time.RFC3339, setting.Value)
-			case "vcs.modified":
-				info.Modified, _ = strconv.ParseBool(setting.Value)
-			}
-		}
-	}
-
-	return info
-}
 
 type GlobalConfig struct {
 	Log logger.Config `json:"log"`
 }
 
 func main() {
-	info := parseBuildInfo()
+	info := build.ParseInfo()
 
 	config := &GlobalConfig{
 		Log: logger.DefaultConfig(),

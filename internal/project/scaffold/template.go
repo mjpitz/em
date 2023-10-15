@@ -25,9 +25,10 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"go.uber.org/zap"
+
 	"go.pitz.tech/em/internal/project/scaffold/gitignore"
 	"go.pitz.tech/em/internal/project/scaffold/licenses"
-	"go.uber.org/zap"
 
 	"go.pitz.tech/lib/logger"
 )
@@ -96,23 +97,11 @@ var (
 			ignore, _ := gitignore.Get(id)
 			return ignore
 		},
-		"license": func(spdx string) string {
-			license, ok := licenses.Get(spdx)
-			if ok {
-				return license
-			}
-
-			panic("todo: slow, online path")
-		},
-		"license_header": func(spdx string) string {
-			header, ok := licenses.GetHeader(spdx)
-			if ok {
-				return header
-			}
-
-			license, ok := licenses.Get(spdx)
-			if ok {
-				return license
+		"license": func(templateName string) string {
+			if license, ok := licenses.ByTemplateName[templateName]; ok {
+				if text, ok := license.Text(); ok {
+					return text
+				}
 			}
 
 			panic("todo: slow, online path")
@@ -139,9 +128,11 @@ func init() {
 
 // Data defines the information needed to render the template.
 type Data struct {
-	Name     string   `json:"name"`
-	License  string   `json:"license"`
-	Features []string `json:"features"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	License     string   `json:"license"`
+	SPDX        string   `json:"spdx"`
+	Features    []string `json:"features"`
 }
 
 func resolveFeatures(features []string) []string {
@@ -268,7 +259,8 @@ func (s *Renderer) Render(ctx context.Context) []File {
 
 		err = template.Must(contents.Parse(string(templateContents))).Execute(renderedContents, s.data)
 		if err != nil {
-			logger.Error("fa")
+			logger.Error("failed to render template", zap.Error(err))
+			continue
 		}
 
 		renderedFiles[templateName] = len(results)
