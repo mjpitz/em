@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.10.0
-	github.com/urfave/cli/v2 v2.25.7
+	github.com/urfave/cli/v2 v2.27.1
 	go.pitz.tech/lib v0.0.0-20231007142704-8e3c060b04d7
 	go.pitz.tech/units v0.0.0-20230716150049-6c28c390405c
 	go.uber.org/zap v1.26.0
