@@ -46,5 +46,5 @@ require (
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
-	gorm.io/gorm v1.25.5
+	gorm.io/gorm v1.25.8
 )
