@@ -204,6 +204,8 @@ go.pitz.tech/lib v0.0.0-20231007142704-8e3c060b04d7 h1:kdyoEwxhWroeTwP5f+UglAfpR
 go.pitz.tech/lib v0.0.0-20231007142704-8e3c060b04d7/go.mod h1:FuEf/wWkV7EqZ/nwtv1Cg4vQNocuCmFYrIQBCSQUE9s=
 go.pitz.tech/units v0.0.0-20230716150049-6c28c390405c h1:n9DDX6EjPFF0v5K9MAElT1uJzyQg5EX+bz0Chgf9BtM=
 go.pitz.tech/units v0.0.0-20230716150049-6c28c390405c/go.mod h1:/GIcQN2Zl3WqhlnsvD7QrgmLwYfDOShAWHcBJlHTsbk=
+go.pitz.tech/units v0.0.0-20250208163145-457a3c69b7f5 h1:RhD6TxPuzcJG+C3fmnzT+yuzakmB/FURhbYF30BPrrI=
+go.pitz.tech/units v0.0.0-20250208163145-457a3c69b7f5/go.mod h1:/GIcQN2Zl3WqhlnsvD7QrgmLwYfDOShAWHcBJlHTsbk=
 go.uber.org/goleak v1.2.0 h1:xqgm/S+aQvhWFTtR0XK3Jvg7z8kGV8P4X14IzwN3Eqk=
 go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=
 go.uber.org/multierr v1.11.0/go.mod h1:20+QtiLqy0Nd6FdQB9TLXag12DsQkrbs3htMFfDN80Y=
